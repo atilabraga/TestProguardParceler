@@ -11,11 +11,17 @@ import com.example.my.parceler.data.Data;
 
 import org.parceler.Parcels;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
     private Data data;
+    private List<Data> dataList;
+    private Map<String, Data> dataMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,18 +30,34 @@ public class MainActivity extends AppCompatActivity {
 
         if (savedInstanceState != null) {
             data = Parcels.unwrap(savedInstanceState.getParcelable("data"));
-            Toast.makeText(this, data.data, Toast.LENGTH_LONG).show();
+            dataList = Parcels.unwrap(savedInstanceState.getParcelable("list"));
+            dataMap = Parcels.unwrap(savedInstanceState.getParcelable("map"));
+
+            Toast.makeText(this, dataMap.get("data").data, Toast.LENGTH_LONG).show();
         } else {
             data = new Data();
             data.data = new Date().toString();
+
+            dataList = new ArrayList<>();
+            dataList.add(data);
+
+            dataMap = new HashMap<>();
+            dataMap.put("data", data);
         }
     }
 
     @Override
     protected void onSaveInstanceState(final Bundle outState) {
         super.onSaveInstanceState(outState);
+
         Parcelable wrap = Parcels.wrap(data);
         outState.putParcelable("data", wrap);
+
+        Parcelable list = Parcels.wrap(dataList);
+        outState.putParcelable("list", list);
+
+        Parcelable map = Parcels.wrap(dataMap);
+        outState.putParcelable("map", map);
     }
 
     @Override
